@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: coworking-api
+  name: coworking
   labels:
-    name: coworking-api
+    name: coworking
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: coworking-api
+      service: coworking
   template:
     metadata:
       labels:
-        service: coworking-api
+        service: coworking
     spec:
       containers:
-      - name: app
+      - name: coworking
         image: 240176184128.dkr.ecr.us-east-1.amazonaws.com/coworking:6
         imagePullPolicy: Always
         livenessProbe:
@@ -30,30 +30,13 @@ spec:
             port: 5153
           initialDelaySeconds: 5
           timeoutSeconds: 5
+        envFrom:
+        - configMapRef:
+            name: myconfigmap
         env:
-        - name: DB_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mysecret
-              key: DB_USERNAME
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mysecret
               key: DB_PASSWORD
-        - name: DB_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: myconfigmap
-              key: DB_NAME
-        - name: DB_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: myconfigmap
-              key: DB_HOST
-        - name: DB_PORT
-          valueFrom:
-            configMapKeyRef:
-              name: myconfigmap
-              key: DB_PORT
       restartPolicy: Always

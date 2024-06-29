@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coworking-api
+  labels:
+    name: coworking-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: coworking-api
+  template:
+    metadata:
+      labels:
+        service: coworking-api
+    spec:
+      containers:
+      - name: app
+        image: 240176184128.dkr.ecr.us-east-1.amazonaws.com/coworking:6
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health_check
+            port: 5153
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: "/readiness_check"
+            port: 5153
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        env:
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysecret
+              key: DB_PASSWORD
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: DB_NAME
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: DB_PORT
+      restartPolicy: Always

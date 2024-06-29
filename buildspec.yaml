@@ -9,10 +9,10 @@ phases:
     commands:
       - echo Starting build at `date`
       - echo Building the Docker image...          
-      - docker build -t coworking-repository:$CODEBUILD_BUILD_NUMBER .
-      - docker tag coworking-repository:$CODEBUILD_BUILD_NUMBER 240176184128.dkr.ecr.us-east-1.amazonaws.com/coworking-repository:$CODEBUILD_BUILD_NUMBER      
+      - docker build -t coworking:$CODEBUILD_BUILD_NUMBER .
+      - docker tag coworking:$CODEBUILD_BUILD_NUMBER 240176184128.dkr.ecr.us-east-1.amazonaws.com/coworking:$CODEBUILD_BUILD_NUMBER      
   post_build:
     commands:
       - echo Completed build at `date`
       - echo Pushing the Docker image...
-      - docker push 240176184128.dkr.ecr.us-east-1.amazonaws.com/coworking-repository:$CODEBUILD_BUILD_NUMBER
+      - docker push 240176184128.dkr.ecr.us-east-1.amazonaws.com/coworking:$CODEBUILD_BUILD_NUMBER
